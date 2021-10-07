@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <img src="/file/posts/7da3d0c49f33f17f217a6968326c5e65">
+        <div class="left">
+            <div class="login">Login</div>
+            <div class="eula">By logging in you agree to the ridiculously long terms that you didn't bother to read.<br>If you not have account, please <a href="/register">Register</a> first
+            </div>
+        </div>
+        <div class="right">
+
+            <form class="form" method="POST" action="/user/login">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" value="{{user.email}}">
+                    <div class="line"></div>
+                    <div class="d-e">{{err1}}</div>
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password"  name="password" value="{{user.password}}">
+                    <div class="line"></div>
+                    <div class="d-e">{{err2}}</div>
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <button class="submit active">SUBMIT</button>
+
+            </form>
+        </div>
+</div>
+<script>
+    const submit = document.querySelector('button');
+    const form = document.querySelector('form');
+    var e = [];
+    var l=document.querySelectorAll('.line');
+    e[0] = document.querySelector('input[name="email"]');
+    e[1] = document.querySelector('input[name="password"]');
+    for(var i=0;i<e.length;i++){
+         if(e[i].value.length!=0){
+          e[i].parentElement.classList.add('err');
+        }
+    }
+
+    form.onsubmit = function (a) {
+       var err=false;
+            for(var i=0;i<e.length;i++){
+                if(e[i].value.length===0){
+                    e[i].parentElement.classList.add('err');
+                    err=true;
+                    console.log(e[i].parentElement)
+                }
+               
+            }
+             if(err) a.preventDefault();
+
+    };
+  
+
+</script>
+</body>
+</html>
