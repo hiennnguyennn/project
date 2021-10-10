@@ -1,6 +1,5 @@
-import { ConflictException } from "@nestjs/common";
-import { Post } from "src/posts/post.entity";
-import { User } from "src/user/user.entity";
+import { Post } from "src/posts/entity/post.entity";
+import { User } from "src/user/entity/user.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()

@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { resolve } from 'path/posix';
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entity/user.entity';
 import { getRepository, Repository } from 'typeorm';
-import { TagNameDto } from './tagname.dto';
-import { TagName } from './tagname.entity';
+import { TagNameDto } from './DTO/tagname.dto';
+import { TagName } from './entity/tagname.entity';
 
 @Injectable()
 export class TagnameService {
@@ -20,20 +19,24 @@ export class TagnameService {
             resolve(this.tagNameRepository.find());
         })
     };
-
-    createTagname(tagname:TagNameDto):Promise<any>{
+    CurrentUser(userId):Promise<any>{
         return new Promise(async resolve=>{
-                
+            resolve(await this.userRepository.findOne(Number(userId)));
+        })
+    }
+    createTagname(tagname:TagNameDto,userId):Promise<any>{
+        return new Promise(async resolve=>{
+                let u=await this.CurrentUser(userId);
                 let exist=await this.tagNameRepository.findOne({where:{tag:tagname.tag}});
                 if(exist!=null) resolve('exist');
                 else{
                    
                     let tmp:Object={
                         tag:tagname.tag,
-                       // createdUser:u
+                        createdUser:u
                     }
                     await this.tagNameRepository.save(tmp);
-                    resolve(this.tagNameRepository.findOne({where:{tag:tagname.tag}}));
+                    resolve(await this.tagNameRepository.findOne({where:{tag:tagname.tag}}));
                 }
             
         })
@@ -44,12 +47,9 @@ export class TagnameService {
             let t:TagNameDto=Object(newName);
 
            if(t.tag[0]!=='#') t.tag='#'+t.tag;
-                let result=await this.tagNameRepository.findOne({relations:["createdUser"],where:{id:id}})
-                if(result==null) resolve('not exist tagname id')
-                else{
-                    
-                   // if(JSON.stringify(u)!=JSON.stringify(result.createdUser)) resolve('you are not allow')
-                   // else{
+               // let result=await this.tagNameRepository.findOne({relations:["createdUser"],where:{id:id}})
+                //if(result==null) resolve('not exist tagname id')
+                //else{
                         let tmp=await this.tagNameRepository.findOne({where:{tag:t.tag}});
                         if(tmp!=null){
                             resolve('tagname exist');
@@ -57,11 +57,8 @@ export class TagnameService {
                         else{
                             await this.tagNameRepository.update({id},t);
                             resolve(this.tagNameRepository.findOne(id));
-                        }
-                   // }
-                   
-                   
-                }
+                        }                
+               // }
             
            
         })

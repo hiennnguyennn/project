@@ -1,6 +1,6 @@
-import { Comment } from "src/comments/comment.entity";
-import { TagName } from "src/tagname/tagname.entity";
-import { User } from "src/user/user.entity";
+import { Comment } from "src/comments/entity/comment.entity";
+import { TagName } from "src/tagname/entity/tagname.entity";
+import { User } from "src/user/entity/user.entity";
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()

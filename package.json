@@ -1,5 +1,5 @@
 {
-  "name": "project1",
+  "name": "project",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -22,9 +22,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^1.6.0",
     "@nestjs/bull": "^0.4.1",
     "@nestjs/common": "^8.0.0",
-    "@nestjs/config": "^1.0.1",
+    "@nestjs/config": "^1.0.2",
     "@nestjs/core": "^8.0.0",
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/passport": "^8.0.1",
@@ -47,7 +48,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "swagger-ui-express": "^4.1.6",
-    "typeorm": "^0.2.37"
+    "typeorm": "^0.2.38"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
@@ -60,6 +61,7 @@
     "@types/jest": "^27.0.1",
     "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",
+    "@types/nodemailer": "^6.4.4",
     "@types/passport-jwt": "^3.0.6",
     "@types/passport-local": "^1.0.34",
     "@types/supertest": "^2.0.11",

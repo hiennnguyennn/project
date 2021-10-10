@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, HttpException, Param, Patch, Post, Query, Req, Res, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ExpressAdapter, FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { type } from 'os';
-import { PostDto } from './post.dto';
-import { PostEditDto } from './post.edit.dto';
+import {  ApiConsumes, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { Auth } from 'src/auth/decorator/auth.decorator';
+import { PostDto } from './DTO/post.dto';
+import { PostEditDto } from './DTO/post.edit.dto';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
@@ -17,40 +17,40 @@ export class PostsController {
         return result;
     }
 
-    
+    @Auth('user')
     @UseInterceptors(FileFieldsInterceptor([{ name: 'file', maxCount: 5 }], { dest: "./public/file/posts" }))
     @Post('create')
     @ApiResponse({ status: 201, description: 'The tagname has been successfully created.' })
     @ApiConsumes('multipart/form-data')
-    async upload(@Body() body: PostDto, @UploadedFiles() file: [Express.Multer.File]) {
-
-        const result = await this.postsService.savePost(body, file);
+    async upload(@Req() Req,@Body() body: PostDto, @UploadedFiles() file: [Express.Multer.File]) {
+        const result = await this.postsService.savePost(body, file,Req.user.id);
         return result;
 
     }
 
 
-
+    @Auth('own')
     @UseInterceptors(FileFieldsInterceptor([{ name: 'file', maxCount: 5 }], { dest: "./public/file/posts" }))
     @Patch('edit')
     @ApiResponse({ status: 200, description: 'Edit successfully.' })
-    @ApiResponse({status:404,description:'PostId not found'})
+  //  @ApiResponse({status:404,description:'PostId not found'})
     @ApiConsumes('multipart/form-data')
     @ApiQuery({ name: 'postId' })
     async editPost(@Query('postId') postId, @Body() newPost: PostEditDto, @UploadedFiles() file: [Express.Multer.File]) {
         const result = await this.postsService.editPost(postId, newPost, file);
-        if(result=='not exist') throw new HttpException('PostID not found',404);
-        else return result;
+       // if(result=='not exist') throw new HttpException('PostID not found',404);
+         return result;
     }
 
+    @Auth('own')
     @Delete('delete')
     @ApiResponse({ status: 200, description: 'Delete successfully.' })
     @ApiResponse({status:404,description:'PostId not found'})
     @ApiQuery({name:'postId'})
     async deletePost(@Query('postId') id) {
         const r=await this.postsService.deletePost(id);
-        if(r=='not exist') throw new HttpException('PostID not found',404)
-        else return r;
+      //  if(r=='not exist') throw new HttpException('PostID not found',404)
+         return r;
     }
    
 

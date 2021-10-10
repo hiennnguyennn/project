@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { isArray } from "util";
 
 export class PostDto{
     @ApiProperty({

@@ -1,9 +1,9 @@
 import { Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TagName } from 'src/tagname/tagname.entity';
-import { User } from 'src/user/user.entity';
+import { TagName } from 'src/tagname/entity/tagname.entity';
+import { User } from 'src/user/entity/user.entity';
 import { getRepository, Repository } from 'typeorm';
-import { Post } from './post.entity';
+import { Post } from './entity/post.entity';
 
 @Injectable()
 
@@ -28,21 +28,22 @@ export class PostsService {
             var result:Post[] = await this.postRepository.find();
             result.forEach((post, index) => {
                 for (var i = 0; i < post.file.length; i++) {
-                    post.file[i] = `<html><img src='./file/posts/${post.file[i]}'></html>'`;
+                    post.file[i] = `src='localhost:3000/file/posts/${post.file[i]}'`;
                 }
             });
             result=this.pagination(result,page);
             resolve(result);
         })
     }
-
-    savePost(post, file): Promise<any> {
+    CurrentUser(userId):Promise<any>{
+        return new Promise(async resolve=>{
+            resolve(await this.userRepository.findOne(Number(userId)));
+        })
+    }
+    savePost(post, file,userId): Promise<any> {
 
         file = (Object(file).file);
         return new Promise(async resolve => {
-
-            //let u = await this.userRepository.findOne(Number(post.createdUserId));
-
             let t: TagName[] = [];
             post.tag = post.tag.split(',');
             for (var i = 0; i < post.tag.length; i++) {
@@ -56,18 +57,18 @@ export class PostsService {
                     f.push(item.filename);
                 });
             }
-
+            let time=new Date().toString();
+            const u=await this.CurrentUser(userId)
             const p: Object = {
                 name: post.name,
                 content: post.content,
                 file: f,
                 listTagname: t,
-               // createdUser: c,
-                createAt: new Date().toString(),
+                createdUser:u,
+                createAt: time
             };
             await this.postRepository.save(p);
-            resolve(p);
-            //  resolve(await this.postRepository.findOne({ where: { name: post.name } }));
+            resolve(await this.postRepository.findOne({where:{createAt:time,createdUser:u}}));
         })
     }
 
@@ -79,9 +80,9 @@ export class PostsService {
             //let tmp: Object = {};
             file = (Object(file).file);
             post = Object(post);
-            let tmp = await this.postRepository.findOne({ relations: ['createdUser'], where: { id: id } });
-            if (tmp == null) resolve('not exist')
-            else {
+            let tmp = await this.postRepository.findOne(id);
+          //  if (tmp == null) resolve('not exist')
+          //  else {
                // if (JSON.stringify(tmp.createdUser) != JSON.stringify(c)) resolve('you are not allow')
                 //else {
                     if (file != null) {
@@ -105,15 +106,13 @@ export class PostsService {
                             let x = await this.tagRepository.findOne(Number(post.tag[i]));
                             listTag.push(x);
                         }
-                        //   resolve(listTag);
                         tmp['listTagname'] = listTag;
-                        //  resolve(tmp)
                     }
                     await this.postRepository.save(tmp);
                     resolve(await this.postRepository.findOne(id));
                // }
 
-            }
+          //  }
         })
     }
 
@@ -151,6 +150,11 @@ export class PostsService {
             // let p= await this.tagRepository.findOne({relations:["posts"],where:{id:tag}});
             //  let posts=p["posts"];
             let posts: Post[] = await this.postRepository.find({ relations: ['listTagname'] });
+            posts.forEach((post,index)=>{
+                for(var i=0;i<post.file.length;i++){
+                    post.file[i] = `src='localhost:3000/file/posts/${post.file[i]}'`;
+                }
+            })
             posts.sort((b, a) =>
                 new Date(a.createAt).getTime() - new Date(b.createAt).getTime()
             )
@@ -161,7 +165,6 @@ export class PostsService {
 
         })
     }
-    // checker:boolean = (arr, target) => target.every(v => arr.includes(v));
 
     check(arr, target): boolean {
         let checker: boolean = target.every(v => arr.includes(v));
@@ -170,7 +173,6 @@ export class PostsService {
     search(value,page): Promise<any> {
         let v: string[] = value.split(" ");
         return new Promise(async resolve => {
-            // const posts: Post[] = await this.postRepository.query(`select p.*,t.tag from post p, tag_name t, post_list_tagname_tag_name tp where p.id=tp.postId and t.id=tagNameId `)
             const posts: Post[] = await this.postRepository.find({ relations: ['listTagname'] });
             let result:Post[]=[];
             let name_tag: string[][] = [];
@@ -182,11 +184,14 @@ export class PostsService {
                 });
                 name_tag.push(t);
             });
-           // let checker = (arr, target) => target.every(v => arr.includes(v));
            let checker = (arr, target) => target.every(v => arr.includes(v));
-            let ar_int:number[]=[];
             name_tag.forEach((item,index)=>{
                 if(checker(item,v)) result.push(posts[index]);
+            });
+            result.forEach((post, index) => {
+                for (var i = 0; i < post.file.length; i++) {
+                    post.file[i] = `src='localhost:3000/file/posts/${post.file[i]}'`;
+                }
             });
             result=this.pagination(result,page);
             resolve(result)

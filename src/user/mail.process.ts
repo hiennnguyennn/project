@@ -2,12 +2,18 @@ import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job } from "bull";
 
+
+require('dotenv').config();
+
 @Processor('mail')
+
 export class MailProcessor{
    // private readonly logger= new Logger(MailProcessor.name);
 
     @Process('transcode')
+    
     async transcode(job:Job<unknown>){
+        console.log(123);
         const mail=job.data['mail'];
         const nodeMailer = require('nodemailer');
         const transporter = nodeMailer.createTransport({
@@ -17,8 +23,9 @@ export class MailProcessor{
                 pass: process.env.HOST_MAIL_PASS
             }
         });
+        
         const option = {
-            from: process.env.HOST_MAIL_NAME,
+            from:  process.env.HOST_MAIL_NAME,
             to: mail,
             subject: "Login",
             text: "Login successfully"
@@ -31,8 +38,5 @@ export class MailProcessor{
             console.log("Sent: " + info.response);
         })
         
-        // console.log('Starting transcoding');
-        // console.log(job.data);
-        // console.log('Transcoding completed');
     }
 }
