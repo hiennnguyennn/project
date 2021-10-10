@@ -10,7 +10,9 @@ import { PostsService } from './posts.service';
 export class PostsController {
     constructor(private postsService: PostsService) { }
 
+
     @Get()
+    @ApiResponse({ status: 200, description: 'Get list successfully' })
     @ApiQuery({name:'page'})
     async getAllPosts(@Query('page') page) {
         const result = await this.postsService.getPost(page);
@@ -33,6 +35,7 @@ export class PostsController {
     @UseInterceptors(FileFieldsInterceptor([{ name: 'file', maxCount: 5 }], { dest: "./public/file/posts" }))
     @Patch('edit')
     @ApiResponse({ status: 200, description: 'Edit successfully.' })
+    @ApiResponse({ status: 403, description: 'You are not allowed.' })
   //  @ApiResponse({status:404,description:'PostId not found'})
     @ApiConsumes('multipart/form-data')
     @ApiQuery({ name: 'postId' })
@@ -45,7 +48,8 @@ export class PostsController {
     @Auth('own')
     @Delete('delete')
     @ApiResponse({ status: 200, description: 'Delete successfully.' })
-    @ApiResponse({status:404,description:'PostId not found'})
+    @ApiResponse({ status: 403, description: 'You are not allowed.' })
+   // @ApiResponse({status:404,description:'PostId not found'})
     @ApiQuery({name:'postId'})
     async deletePost(@Query('postId') id) {
         const r=await this.postsService.deletePost(id);
@@ -57,7 +61,7 @@ export class PostsController {
     @Get('top')
     @ApiQuery({name:'page'})
     @ApiResponse({ status: 200, description: 'Get top TagName successfully.' })
-    @ApiResponse({status:404,description:'TagId not found'})
+  //  @ApiResponse({status:404,description:'TagId not found'})
     async getTopPost(@Query('page') page){
         const result=await this.postsService.getTopPost(page);
        
@@ -65,6 +69,7 @@ export class PostsController {
     }
 
     @Get('search')
+    @ApiResponse({ status: 200, description: 'Search successfully' })
     @ApiQuery({name:'value'})
     @ApiQuery({name:'page'})
     async search(@Query('value') value, @Query('page') page){

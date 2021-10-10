@@ -8,9 +8,8 @@ import { TagnameService } from './tagname.service';
 export class TagnameController {
   constructor(private tagNameService: TagnameService) { }
 
-  @Auth('user')
   @Get()
-  @ApiResponse({ status: 200, description: 'The list of tagname.' })
+  @ApiResponse({ status: 200, description: 'get list tagname successfully' })
   async show() {
     const result = await this.tagNameService.findAll();
     return result;
@@ -35,6 +34,7 @@ export class TagnameController {
   @Auth('own')
   @Patch('update')
   @ApiResponse({ status: 200, description: 'Update successfully.' })
+  @ApiResponse({ status: 403, description: 'You are not allowed.' })
   // @ApiResponse({status:404,description:'TagnameID not found'})
   @ApiResponse({ status: 409, description: 'Tagname exist' })
   @ApiQuery({ name: 'tagId' })

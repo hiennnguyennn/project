@@ -19,13 +19,13 @@ export class MailProcessor{
         const transporter = nodeMailer.createTransport({
             service: "Gmail",
             auth: {
-                user: process.env.HOST_MAIL_NAME,
-                pass: process.env.HOST_MAIL_PASS
+                user: "hienntt183734@gmail.com",
+                pass: "hien842850"
             }
         });
         
         const option = {
-            from:  process.env.HOST_MAIL_NAME,
+            from: "hienntt183734@gmail.com",
             to: mail,
             subject: "Login",
             text: "Login successfully"

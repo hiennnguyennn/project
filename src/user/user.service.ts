@@ -53,8 +53,8 @@ export class UserService {
         })
     }
 
-    async findOne(username: string): Promise<any> {
-        return await this.usersRepository.findOne({ where: { email: username } });
+    async findOne(email: string): Promise<any> {
+        return await this.usersRepository.findOne({ where: { email: email } });
     }
 
     // async findOne(email,password): Promise<any> {

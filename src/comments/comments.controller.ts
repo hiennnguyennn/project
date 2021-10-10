@@ -10,6 +10,7 @@ export class CommentsController {
 
     @Auth('user')
     @Post()
+    @ApiResponse({ status: 201, description: 'Comment successfully' })
     @ApiQuery({name:'postId'})
     async comment(@Req() req,@Query('postId') postId,@Body() commenDto:CommentDto){
         const result=await this.commentsService.comment(postId,req.user.id,commenDto);
@@ -17,6 +18,7 @@ export class CommentsController {
     }
 
     @Get('list')
+    @ApiResponse({ status: 200, description: 'Get list comments successfully' })
     @ApiQuery({name:'postId'})
     async listComments(@Query('postId') postId){
         const result=await this.commentsService.getComments(postId);
@@ -26,6 +28,7 @@ export class CommentsController {
     @Auth('own')
     @Patch('edit')
     @ApiResponse({status:200,description:'Edit successfully'})
+    @ApiResponse({ status: 403, description: 'You are not allowed.' })
     @ApiQuery({name:'commentId'})
     async editComment(@Query('commentId') commentId,@Body() comment:CommentDto ){
         const result=await this.commentsService.editComment(commentId,comment);
