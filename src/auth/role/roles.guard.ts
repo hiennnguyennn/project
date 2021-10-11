@@ -28,7 +28,4 @@ export class RolesGuard implements CanActivate {
     }
    
   };
-  async check(userId,id){
-    //return await this.usersService.checkOwn(userId,id);
-  }
 }

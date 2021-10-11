@@ -55,8 +55,9 @@ export class UserController {
             throw new HttpException('Email used', 409)
         }
         else {
-            Res.cookie('jwt', result['jwt'], { httpOnly: true });
-            return result['u'];
+            var jwt=await this.authService.login(result);
+            Res.cookie('jwt',jwt, { httpOnly: true });
+            return result;
         }
     }
 

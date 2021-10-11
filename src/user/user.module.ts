@@ -14,10 +14,6 @@ import { AuthModule } from 'src/auth/auth.module';
     [
       TypeOrmModule.forFeature([User]),
       BullModule.registerQueue({ name: 'mail' }),
-      JwtModule.register({
-        secret:'secret',
-        signOptions:{expiresIn:'60s'}
-      }),
       forwardRef(() => AuthModule)
     ],
   controllers: [UserController],

@@ -19,7 +19,6 @@ export class UserService {
     private postRepository=getRepository(Post);
     private commentRepository=getRepository(Comment);
     constructor(
-        private jwtService: JwtService,
         @InjectQueue('mail') private readonly mailQueue: Queue,
         @InjectRepository(User)
         private usersRepository: Repository<User>,
@@ -111,9 +110,9 @@ export class UserService {
                 //     console.log("Sent: " + info.response);
                 // })
                 const saveUser = await this.usersRepository.findOne({ where: { email: user.email } });
-                 const jwt = await this.jwtService.sign({ id: saveUser.id, email: saveUser.email });
-                 console.log(jwt);
-                 resolve({u:saveUser,jwt});
+                // const jwt = await this.jwtService.sign({ id: saveUser.id, email: saveUser.email });
+                 //console.log(jwt);
+                 resolve(saveUser);
             }
 
         })
