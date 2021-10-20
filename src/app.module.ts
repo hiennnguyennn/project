@@ -4,17 +4,19 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { User } from './user/entity/user.entity'
-import { TagName } from './tagname/entity/tagname.entity';
-import { UserModule } from './user/user.module';
-import { TagnameModule } from './tagname/tagname.module';
-import { PostsModule } from './posts/posts.module';
+import { User } from './modules/user/entity/user.entity'
+import { TagName } from './modules/tagname/entity/tagname.entity';
+import { UserModule } from './modules/user/user.module';
+import { TagnameModule } from './modules/tagname/tagname.module';
+import { PostsModule } from './modules/posts/posts.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { Comment } from './comments/entity/comment.entity';
+import { Comment } from './modules/comments/entity/comment.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { CommentsModule } from './comments/comments.module';
+import { CommentsModule } from './modules/comments/comments.module';
+import { DatabaseConfig } from './config/database.config';
+import { configService } from './config/config';
 require('dotenv').config();
 @Module({
   imports: [
@@ -22,7 +24,7 @@ require('dotenv').config();
       rootPath:join(__dirname,'..','public')
     }),
     ConfigModule.forRoot(
-      {isGlobal:true,}
+      {isGlobal:true,load:[configService]}
     ),
     BullModule.forRoot({
       redis:{
@@ -31,17 +33,18 @@ require('dotenv').config();
       }
     }),
     
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: Number(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      autoLoadEntities: true,
-      entities: [User,TagName,Post,Comment],
-      synchronize: true,
-    }),
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: 'localhost',
+    //   port: Number(process.env.DB_PORT),
+    //   username: process.env.DB_USERNAME,
+    //   password: process.env.DB_PASSWORD,
+    //   database: process.env.DB_NAME,
+    //   autoLoadEntities: true,
+    //   entities: [User,TagName,Post,Comment],
+    //   synchronize: true,
+    // }),
+    TypeOrmModule.forRootAsync({imports:[ConfigModule],useClass:DatabaseConfig}),
     
     UserModule,
     AuthModule,

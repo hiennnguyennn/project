@@ -4,6 +4,9 @@ import { join } from 'path';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ConfigService } from '@nestjs/config';
 
 
 async function bootstrap() {
@@ -33,9 +36,12 @@ async function bootstrap() {
     origin:'http://localhost:8080',
     credentials:true
   });
+  app.useGlobalFilters(new HttpExceptionFilter)
   app.use(cookieParser());
+  app.useGlobalPipes(new ValidationPipe({transform:true}));
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  await app.listen(Number(process.env.PORT));
+  const configService=app.get(ConfigService)
+  await app.listen(configService.get('PORT'));
 }
 bootstrap();
