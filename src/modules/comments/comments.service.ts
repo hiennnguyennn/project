@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from 'src/modules/posts/entity/post.entity';
-import { User } from 'src/modules/user/entity/user.entity';
 import { getRepository, Repository } from 'typeorm';
 import { Comment } from './entity/comment.entity';
 import { commentInterface } from './interface/comment.interface';
@@ -9,7 +8,6 @@ import { commentInterface } from './interface/comment.interface';
 @Injectable()
 export class CommentsService {
     private postRepository=getRepository(Post);
-    private userRepository=getRepository(User);
     constructor(
     @InjectRepository(Comment)
     private commentRepository:Repository<Comment>
@@ -54,7 +52,6 @@ export class CommentsService {
         return new Promise(async resolve=>{
             let p=await this.postRepository.findOne(postId);
             let c=await this.commentRepository.createQueryBuilder("Comment").innerJoinAndSelect("Comment.post","post").leftJoinAndSelect("Comment.createdUser","user").where(`Comment.post.id=${postId}`).getMany()
-             // let c:Comment[]=await this.commentRepository.query(`select c.* from comment c inner join user u on c.createdUserId=u.id where c.postId=${postId}`);
             let x:commentInterface[]=[];
             await c.forEach((item,index)=>{
                 x[index]=this.transfer(item);

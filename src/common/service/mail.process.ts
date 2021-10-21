@@ -1,5 +1,5 @@
 import { Process, Processor } from "@nestjs/bull";
-import { Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
 
 
@@ -9,7 +9,7 @@ require('dotenv').config();
 
 export class MailProcessor{
    // private readonly logger= new Logger(MailProcessor.name);
-
+    constructor(private configService:ConfigService){}
     @Process('transcode')
     
     async transcode(job:Job<unknown>){
@@ -18,10 +18,11 @@ export class MailProcessor{
         const nodeMailer = require('nodemailer');
         const transporter = nodeMailer.createTransport({
             service: "Gmail",
-            auth: {
-                user: "hienntt183734@gmail.com",
-                pass: "hien842850"
-            }
+            auth:this.configService.get('mail')
+            // auth: {
+            //     user: "hienntt183734@gmail.com",
+            //     pass: "hien842850"
+            // }
         });
         
         const option = {
@@ -47,10 +48,11 @@ export class MailProcessor{
         const nodeMailer = require('nodemailer');
         const transporter = nodeMailer.createTransport({
             service: "Gmail",
-            auth: {
-                user: "hienntt183734@gmail.com",
-                pass: "hien842850"
-            }
+            auth:this.configService.get('mail')
+            // auth: {
+            //     user: "hienntt183734@gmail.com",
+            //     pass: "hien842850"
+            // }
         });
         
         const option = {

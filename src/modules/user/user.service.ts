@@ -2,13 +2,11 @@ import {  Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import { User } from './entity/user.entity';
-import * as bcrypt from 'bcrypt'
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { TagName } from 'src/modules/tagname/entity/tagname.entity';
 import { Post } from 'src/modules/posts/entity/post.entity';
 import { Comment } from 'src/modules/comments/entity/comment.entity';
-import { UserDto } from './dto/userDto';
 
 
 @Injectable()

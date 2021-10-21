@@ -9,6 +9,11 @@ export const configService=()=>({
       autoLoadEntities: true,
       synchronize: true,
     },
+    mail:{
+      email:process.env.HOST_MAIL_NAME,
+      password:process.env.HOST_MAIL_PASS
+    }
+    ,
     jwtSecret:process.env.JWT_SECRET,
     port:Number(process.env.PORT)
 })

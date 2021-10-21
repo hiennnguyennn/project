@@ -1,17 +1,13 @@
 import { BullModule } from '@nestjs/bull';
-import { Module, Post } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { User } from './modules/user/entity/user.entity'
-import { TagName } from './modules/tagname/entity/tagname.entity';
 import { UserModule } from './modules/user/user.module';
 import { TagnameModule } from './modules/tagname/tagname.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { Comment } from './modules/comments/entity/comment.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { CommentsModule } from './modules/comments/comments.module';
